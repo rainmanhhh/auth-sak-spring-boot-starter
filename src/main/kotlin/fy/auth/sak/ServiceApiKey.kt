@@ -26,37 +26,28 @@ class ServiceApiKey {
   private fun isConfigValid() = name.isNotEmpty() && value.isNotEmpty()
 
   /**
-   * encode SAK. format: MD5([value]+[salt]).toHex() + [salt] (hex: 32 chars, lower case)
-   * @return if name or value is empty return null; else return encoded SAK
+   * encode SAK. format: MD5(value+salt).toHex() + salt (hex: 32 chars, lower case)
+   * @return encoded SAK
    */
-  fun encode(): String? {
-    return if (isConfigValid()) {
-      val hex = DigestUtils.md5DigestAsHex((value + salt).toByteArray())
-      hex + salt
-    } else {
-      logger.warn("SAK config not valid(name or value is empty)")
-      null
-    }
+  fun encode(value: String, salt: String): String {
+    val hex = DigestUtils.md5DigestAsHex((value + salt).toByteArray())
+    return hex + salt
   }
 
   /**
-   * remove the salt suffix from encoded SAK
-   * @see [encode]
+   * encode local SAK(for sending to other services)
+   * @return if config not valid - null; else - encoded local SAK
    */
-  private fun removeSalt(encodedKey: String) = encodedKey.substring(0, 32)
+  fun encodeLocal(): String? = if (isConfigValid()) encode(value, salt) else null
 
   /**
-   * check if the input key match with local key
+   * check if the remote SAK use the same key as local config
    */
-  fun check(inputKey: String?): Boolean {
-    val localKey = encode()
-    return if (inputKey == null || localKey == null) {
-      logger.debug("inputKey or localKey is null")
-      false
-    } else {
-      val result = removeSalt(inputKey) == removeSalt(localKey)
-      if (!result) logger.warn("SAK not match! inputKey: {}, localKey: {}", inputKey, localKey)
-      result
-    }
+  fun checkRemote(remoteSAK: String?): Boolean {
+    if (remoteSAK == null) return !isConfigValid()
+    val remoteSalt = remoteSAK.substring(32)
+    val result = encode(value, remoteSalt) == remoteSAK
+    if (!result) logger.warn("SAK not match! remoteSAK: {}", remoteSAK)
+    return result
   }
 }
