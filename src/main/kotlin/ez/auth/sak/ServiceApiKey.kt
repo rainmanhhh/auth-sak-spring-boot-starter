@@ -1,4 +1,4 @@
-package fy.auth.sak
+package ez.auth.sak
 
 import org.slf4j.LoggerFactory
 import org.springframework.util.DigestUtils

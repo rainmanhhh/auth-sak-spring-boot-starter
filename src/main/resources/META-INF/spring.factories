@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  fy.auth.sak.AuthServiceApiKeyAutoConfiguration
+  ez.auth.sak.AuthServiceApiKeyAutoConfiguration
