@@ -24,6 +24,9 @@ class ServiceApiKey {
    */
   var salt = DigestUtils.md5DigestAsHex(Math.random().toString().toByteArray())
 
+  /**
+   * @return if both sak [name] and [value] are not empty - true; else -false
+   */
   private fun isConfigValid() = name.isNotEmpty() && value.isNotEmpty()
 
   /**
@@ -37,7 +40,7 @@ class ServiceApiKey {
 
   /**
    * encode local SAK(for sending to other services)
-   * @return if config not valid - null; else - encoded local SAK
+   * @return if [isConfigValid] return true - encoded local SAK; else - null
    */
   fun encodeLocal(): String? = if (isConfigValid()) encode(value, salt) else null
 
