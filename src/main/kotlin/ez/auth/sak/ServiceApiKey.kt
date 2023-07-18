@@ -3,6 +3,7 @@ package ez.auth.sak
 import org.slf4j.LoggerFactory
 import org.springframework.util.DigestUtils
 
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class ServiceApiKey {
   companion object {
     private val logger = LoggerFactory.getLogger(ServiceApiKey::class.java)
